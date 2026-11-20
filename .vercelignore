@@ -1,0 +1,5 @@
+# Na Vercel so sobe o gatilho do cron. O sync em si roda no GitHub Actions.
+/*
+!/api
+!/vercel.json
+!/package.json
