@@ -8,11 +8,23 @@ de la e **arquivada** na CMS (nunca deletada).
 
 ## Como roda
 
-Cron do GitHub Actions a cada 5 minutos. Tambem da pra disparar na mao em
-**Actions -> sync -> Run workflow**, com as opcoes `dry_run` e `force`.
+O sync roda no GitHub Actions (`.github/workflows/sync.yml`). Quem dispara a cada
+5 minutos e um **cron da Vercel** (projeto `nirvana-careers-sync`, time `mandl`), que
+chama `api/tick.js`; essa funcao so faz `workflow_dispatch` do `sync.yml` na `main`.
+Tambem da pra disparar na mao em **Actions -> sync -> Run workflow**, com as opcoes
+`dry_run` e `force`.
 
-O GitHub nao garante pontualidade de cron: em horario de pico o intervalo real fica
-entre 5 e 15 minutos.
+Por que a Vercel: o `schedule` do GitHub e melhor esforco e foi piorando. O cron de
+5 min chegou a rodar so 3 a 5 vezes por dia em nov/2026 (uma a cada ~6 h), e vaga
+nova levava horas pra aparecer. O `schedule` continua no workflow como reserva; o
+`concurrency` impede duas rodadas ao mesmo tempo.
+
+Env do projeto na Vercel (Sensitive, Production):
+- `GITHUB_DISPATCH_TOKEN`: token fine-grained do GitHub, dono `Mandl-Creative`, so
+  este repo, permissao **Actions: Read and write**. A org pede aprovacao do owner.
+  Vence em 2027-11-21: gerar outro antes e trocar o env.
+- `CRON_SECRET`: a Vercel manda no header `Authorization` de cada chamada do cron;
+  sem ele a funcao responde 401.
 
 ## Setup
 
